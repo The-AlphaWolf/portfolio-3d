@@ -14,9 +14,9 @@ const patternIndex: Record<Project['pattern'], number> = {
   flow: 5,
 };
 
-const RADIUS = 4.4;
-const CARD_W = 3.4; // world width
-const CARD_H = 1.95;
+const RADIUS = 5.6;
+const CARD_W = 4.6; // world width — front card ~60% frame, neighbours as slivers
+const CARD_H = 2.7;
 const ARC = CARD_W / RADIUS; // angular width of a card
 
 /** A rectangle wrapped onto a cylinder of the given radius, centred facing +Z. */
@@ -142,7 +142,7 @@ export default function WorksRing() {
   });
 
   return (
-    <group ref={root} scale={0} position={[0, 0, 0]}>
+    <group ref={root} scale={0} position={[0, 0, -1.4]}>
       <WorksLabel />
       <group ref={group}>
         {projects.map((p, i) => (

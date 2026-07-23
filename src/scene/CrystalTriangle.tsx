@@ -3,6 +3,9 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { MeshTransmissionMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 import { useStore } from '../store/useStore';
+import { projects } from '../data/projects';
+
+const PROJECT_COUNT = projects.length;
 
 /** Rounded triangle outline (optionally reversed for a hole) at radius R. */
 function triPath<T extends THREE.Shape | THREE.Path>(path: T, R: number, round: number, reverse = false) {
@@ -126,10 +129,21 @@ export default function CrystalTriangle() {
     // float
     g.position.y = reducedMotion ? 0 : Math.sin(state.clock.elapsedTime * 0.6) * 0.05;
 
-    // hide/scale by scroll (crystal belongs to the hero, gone once works begins)
+    // Crystal is the centre anchor through hero AND works. In works it stays
+    // small and peeks between cards (bright mid-transition, hidden when a card
+    // is settled dead-centre), matching alche.studio.
     const stt = useStore.getState();
-    const vis = THREE.MathUtils.clamp(1 - stt.scroll * 6, 0, 1) * (stt.worksActive ? 0 : 1);
-    const s = 1.2 * vis;
+    const heroVis = THREE.MathUtils.clamp(1 - stt.scroll * 6, 0, 1);
+    let worksVis = 0;
+    let scaleMul = 1.2;
+    if (stt.worksActive) {
+      const frac = (stt.worksProgress * (PROJECT_COUNT - 1)) % 1;
+      const between = Math.sin(Math.abs(frac) * Math.PI); // 0 settled .. 1 mid
+      worksVis = 0.3 + 0.7 * between;
+      scaleMul = 0.85;
+    }
+    const vis = Math.max(heroVis, worksVis);
+    const s = scaleMul * vis;
     g.scale.setScalar(s);
     g.visible = vis > 0.02;
 

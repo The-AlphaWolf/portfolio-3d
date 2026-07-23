@@ -42,11 +42,11 @@ export default function Preloader() {
     // safety: never trap the user on the loader if the rAF timeline stalls
     const fallback = setTimeout(finish, 6500);
 
-    if (reducedMotion) {
+    if (reducedMotion || window.location.hash.includes('skip')) {
       [...construct, ...draw].forEach((p) => (p.style.strokeDashoffset = '0'));
       gsap.set(tagline, { opacity: 1 });
-      const t = setTimeout(finish, 600);
-      return () => clearTimeout(t);
+      finish();
+      return () => clearTimeout(fallback);
     }
 
     const tl = gsap.timeline();

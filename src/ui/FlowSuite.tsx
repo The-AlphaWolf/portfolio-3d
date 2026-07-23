@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { featured, featureBullets } from '../data/projects';
+import ProceduralThumb from '../scene/ProceduralThumb';
 
 /** Featured project transition (Image 4) — full-bleed FlowSuite showcase. */
 export default function FlowSuite() {
@@ -29,31 +30,55 @@ export default function FlowSuite() {
       </svg>
 
       <div className="feature-inner reveal" ref={ref}>
-        <div className="featured-tag mono">{featured.date} — FLAGSHIP PROJECT</div>
-        <h2>{featured.title}</h2>
-        <div className="lead">{featured.subtitle}</div>
-        <ul>
-          {featureBullets.map((b, i) => (
-            <li key={i}>{b}</li>
-          ))}
-        </ul>
-        <div className="tags">
-          {featured.tags.map((t) => (
-            <span className="tag" key={t}>{t}</span>
-          ))}
-        </div>
-        <div className="btns">
-          {featured.links.map((l, i) => (
-            <a
-              key={l.href}
-              className={`btn ${i === 0 ? '' : 'ghost'}`}
-              href={l.href}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {l.label}
-            </a>
-          ))}
+        <div className="feature-grid">
+          <div className="feature-text">
+            <div className="featured-tag mono">{featured.date} — FLAGSHIP PROJECT</div>
+            <h2>{featured.title}</h2>
+            <div className="lead">{featured.subtitle}</div>
+            <ul>
+              {featureBullets.map((b, i) => (
+                <li key={i}>{b}</li>
+              ))}
+            </ul>
+            <div className="tags">
+              {featured.tags.map((t) => (
+                <span className="tag" key={t}>{t}</span>
+              ))}
+            </div>
+            <div className="btns">
+              {featured.links.map((l, i) => (
+                <a
+                  key={l.href}
+                  className={`btn ${i === 0 ? '' : 'ghost'}`}
+                  href={l.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {l.label}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className="feature-visual">
+            <div className="visual-frame">
+              <ProceduralThumb project={featured} />
+              {/* voice-waveform overlay reinforcing the audio/voice theme */}
+              <svg className="wave" viewBox="0 0 200 80" preserveAspectRatio="none" aria-hidden>
+                {Array.from({ length: 48 }).map((_, i) => (
+                  <rect key={i} className="wbar" x={i * 4.1 + 2} width={2.1} rx={1}
+                    style={{ animationDelay: `${(i % 12) * 0.08}s` }} />
+                ))}
+              </svg>
+              <span className="visual-tag mono">voice → text · voice → code</span>
+              <span className="visual-idx mono">FLOWSUITE.ENGINE</span>
+            </div>
+            <div className="visual-meta mono">
+              <span>latency ~120ms</span>
+              <span>offline · local</span>
+              <span>v0.1.0</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>

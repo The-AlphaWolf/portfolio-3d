@@ -4,6 +4,41 @@ import { profile, nav } from '../data/profile';
 export default function Contact() {
   return (
     <section className="section contact" id="contact">
+      {/* Alche-style construction lines + perspective depth */}
+      <svg className="contact-bg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden>
+        <defs>
+          <radialGradient id="cfade" cx="50%" cy="40%" r="70%">
+            <stop offset="0%" stopColor="#0b1030" />
+            <stop offset="100%" stopColor="#050509" />
+          </radialGradient>
+        </defs>
+        <rect width="1600" height="900" fill="url(#cfade)" />
+        <g stroke="rgba(150,165,255,0.16)" strokeWidth="1" fill="none">
+          {/* perspective floor lines to a vanishing point */}
+          {Array.from({ length: 13 }).map((_, i) => (
+            <line key={`v${i}`} x1={i * 133} y1="900" x2="800" y2="430" />
+          ))}
+          {/* horizontal depth rules */}
+          {Array.from({ length: 7 }).map((_, i) => {
+            const y = 470 + Math.pow(i / 6, 1.8) * 430;
+            return <line key={`h${i}`} x1="0" y1={y} x2="1600" y2={y} />;
+          })}
+        </g>
+        {/* big crossing diagonals */}
+        <g stroke="rgba(180,190,255,0.22)" strokeWidth="1">
+          <line x1="-100" y1="1000" x2="900" y2="-100" />
+          <line x1="1700" y1="1000" x2="700" y2="-100" />
+        </g>
+        {/* tick crosses */}
+        <g stroke="rgba(150,165,255,0.35)" strokeWidth="1.2">
+          {[[300, 250], [1300, 250], [800, 430], [500, 700], [1100, 700]].map(([x, y], i) => (
+            <g key={i}>
+              <line x1={x - 9} y1={y} x2={x + 9} y2={y} />
+              <line x1={x} y1={y - 9} x2={x} y2={y + 9} />
+            </g>
+          ))}
+        </g>
+      </svg>
       <div className="big-mark">{profile.first}</div>
 
       <div className="contact-grid">
