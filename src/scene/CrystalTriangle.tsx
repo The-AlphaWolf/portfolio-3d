@@ -4,37 +4,43 @@ import { MeshTransmissionMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 import { useStore } from '../store/useStore';
 
-function roundedTriangleGeometry() {
-  const R = 1.15;
-  const round = 0.14;
+/** Rounded triangle outline (optionally reversed for a hole) at radius R. */
+function triPath<T extends THREE.Shape | THREE.Path>(path: T, R: number, round: number, reverse = false) {
   const pts: THREE.Vector2[] = [];
   for (let i = 0; i < 3; i++) {
     const a = -Math.PI / 2 + (i * 2 * Math.PI) / 3;
     pts.push(new THREE.Vector2(Math.cos(a) * R, Math.sin(a) * R));
   }
-  const shape = new THREE.Shape();
-  // build a triangle with rounded corners via quadratic curves
+  if (reverse) pts.reverse();
   for (let i = 0; i < 3; i++) {
-    const prev = pts[(i + 2) % 3];
     const cur = pts[i];
     const next = pts[(i + 1) % 3];
+    const prev = pts[(i + 2) % 3];
     const toPrev = prev.clone().sub(cur).normalize();
     const toNext = next.clone().sub(cur).normalize();
     const p1 = cur.clone().add(toPrev.multiplyScalar(round));
     const p2 = cur.clone().add(toNext.multiplyScalar(round));
-    if (i === 0) shape.moveTo(p1.x, p1.y);
-    else shape.lineTo(p1.x, p1.y);
-    shape.quadraticCurveTo(cur.x, cur.y, p2.x, p2.y);
+    if (i === 0) path.moveTo(p1.x, p1.y);
+    else path.lineTo(p1.x, p1.y);
+    path.quadraticCurveTo(cur.x, cur.y, p2.x, p2.y);
   }
-  shape.closePath();
+  path.closePath();
+  return path;
+}
+
+/** Hollow triangular ring — the ALCHE △ mark, extruded as a faceted crystal. */
+function hollowTriangleGeometry() {
+  const shape = triPath(new THREE.Shape(), 1.45, 0.12);
+  const hole = triPath(new THREE.Path(), 0.72, 0.08, true);
+  shape.holes.push(hole);
 
   const geo = new THREE.ExtrudeGeometry(shape, {
-    depth: 0.5,
+    depth: 0.42,
     bevelEnabled: true,
-    bevelThickness: 0.12,
-    bevelSize: 0.1,
-    bevelSegments: 6,
-    curveSegments: 24,
+    bevelThickness: 0.1,
+    bevelSize: 0.08,
+    bevelSegments: 5,
+    curveSegments: 20,
   });
   geo.center();
   return geo;
@@ -50,7 +56,7 @@ export default function CrystalTriangle() {
   const storeQuat = useStore((s) => s.quaternion);
   const reducedMotion = useStore((s) => s.reducedMotion);
 
-  const geometry = useMemo(roundedTriangleGeometry, []);
+  const geometry = useMemo(hollowTriangleGeometry, []);
 
   const drag = useRef(false);
   const last = useRef({ x: 0, y: 0 });
@@ -120,10 +126,10 @@ export default function CrystalTriangle() {
     // float
     g.position.y = reducedMotion ? 0 : Math.sin(state.clock.elapsedTime * 0.6) * 0.05;
 
-    // hide/scale by scroll (crystal belongs to the hero)
-    const scroll = useStore.getState().scroll;
-    const vis = THREE.MathUtils.clamp(1 - scroll * 6, 0, 1);
-    const s = 1 * vis;
+    // hide/scale by scroll (crystal belongs to the hero, gone once works begins)
+    const stt = useStore.getState();
+    const vis = THREE.MathUtils.clamp(1 - stt.scroll * 6, 0, 1) * (stt.worksActive ? 0 : 1);
+    const s = 1.2 * vis;
     g.scale.setScalar(s);
     g.visible = vis > 0.02;
 
@@ -151,10 +157,10 @@ export default function CrystalTriangle() {
       <mesh geometry={geometry}>
         <MeshTransmissionMaterial
           ref={matRef}
-          transmission={0.92}
-          thickness={1.6}
+          transmission={0.86}
+          thickness={2.1}
           roughness={material.roughness}
-          ior={1.5}
+          ior={1.55}
           chromaticAberration={0.06 + material.noiseScale * 0.02}
           anisotropy={0.4}
           distortion={0.4}

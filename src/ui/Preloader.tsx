@@ -87,17 +87,35 @@ export default function Preloader() {
   return (
     <div ref={rootRef} className="preloader">
       <svg ref={svgRef} viewBox="0 0 620 380" fill="none">
-        {/* --- construction geometry --- */}
-        <circle className="construct-line" cx="310" cy="190" r="150" pathLength={1} />
-        <circle className="construct-line" cx="310" cy="190" r="95" pathLength={1} />
-        <path className="construct-line" d="M310 20 L310 360" pathLength={1} />
-        <path className="construct-line" d="M60 340 L560 340" pathLength={1} />
-        <path className="construct-line" d="M170 60 L450 320" pathLength={1} />
-        <path className="construct-line" d="M450 60 L170 320" pathLength={1} />
+        {/* --- construction geometry: circles --- */}
+        <circle className="construct-line" cx="310" cy="195" r="168" pathLength={1} />
+        <circle className="construct-line" cx="310" cy="195" r="132" pathLength={1} />
+        <circle className="construct-line" cx="310" cy="195" r="90" pathLength={1} />
+        {/* axes + rules */}
+        <path className="construct-line" d="M310 0 L310 380" pathLength={1} />
+        <path className="construct-line" d="M0 195 L620 195" pathLength={1} />
+        <path className="construct-line" d="M0 90 L620 90" pathLength={1} />
+        <path className="construct-line" d="M0 300 L620 300" pathLength={1} />
+        {/* diagonal rays crossing beyond the letters */}
+        <path className="construct-line" d="M20 380 L600 20" pathLength={1} />
+        <path className="construct-line" d="M600 380 L20 20" pathLength={1} />
+        <path className="construct-line" d="M150 380 L235 40 L470 380" pathLength={1} />
+        {/* hex guide */}
+        <path
+          className="construct-line"
+          d="M310 40 L455 122 L455 288 L310 370 L165 288 L165 122 Z"
+          pathLength={1}
+        />
+        {/* tick crosses */}
+        <path className="construct-line" d="M235 84 L235 96 M229 90 L241 90" pathLength={1} />
+        <path className="construct-line" d="M345 84 L345 96 M339 90 L351 90" pathLength={1} />
+        <path className="construct-line" d="M175 294 L175 306 M169 300 L181 300" pathLength={1} />
+        <path className="construct-line" d="M460 294 L460 306 M454 300 L466 300" pathLength={1} />
 
-        {/* --- "A" --- */}
+        {/* --- "A" (with inner triangle detail) --- */}
         <path className="draw-line mono-line" d="M175 300 L235 90 L295 300" pathLength={1} />
         <path className="draw-line mono-line" d="M198 218 L272 218" pathLength={1} />
+        <path className="draw-line mono-line" d="M216 246 L235 158 L254 246 Z" pathLength={1} />
 
         {/* --- "P" --- */}
         <path className="draw-line mono-line" d="M345 90 L345 300" pathLength={1} />

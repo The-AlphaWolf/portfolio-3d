@@ -1,75 +1,94 @@
-import { useEffect, useRef } from 'react';
-import ProceduralThumb from '../scene/ProceduralThumb';
-import { projects, type Project } from '../data/projects';
+import { useEffect, useRef, useState } from 'react';
+import { projects } from '../data/projects';
+import { useStore } from '../store/useStore';
 
-function Slide({ project, index }: { project: Project; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const primary = project.links[0]?.href;
+/**
+ * Works — a tall scroll region that drives the 3D ring in the scene.
+ * The DOM here is just the intro heading + a fixed info overlay that tracks
+ * the front-most card, plus a progress rail.
+ */
+export default function ProjectSlides() {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const setWorks = useStore((s) => s.setWorks);
 
   useEffect(() => {
-    const el = ref.current!;
-    const io = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => e.isIntersecting && el.classList.add('reveal-in')),
-      { threshold: 0.25 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    const N = projects.length;
+    const compute = () => {
+      const el = wrapRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const total = el.offsetHeight - vh; // scrollable distance inside works
+      // progress: 0 when top reaches viewport top, 1 when bottom - vh passes
+      const scrolled = -rect.top;
+      const progress = Math.max(0, Math.min(1, scrolled / total));
+      const inRange = rect.top <= vh * 0.5 && rect.bottom >= vh * 0.5;
+      const index = Math.round(progress * (N - 1));
+      setWorks({ active: inRange, progress, index });
+      setActive(index);
+      setVisible(inRange && progress > 0.02 && progress < 0.99);
+    };
+    compute();
+    const unsub = useStore.subscribe(compute);
+    window.addEventListener('resize', compute);
+    return () => {
+      unsub();
+      window.removeEventListener('resize', compute);
+      setWorks({ active: false, progress: 0, index: 0 });
+    };
+  }, [setWorks]);
+
+  const p = projects[active];
 
   return (
-    <article className="slide reveal" ref={ref} id={project.id}>
-      <div
-        className="slide-media"
-        onClick={() => primary && window.open(primary, '_blank', 'noopener')}
-        role="link"
-        tabIndex={0}
-        onKeyDown={(e) => e.key === 'Enter' && primary && window.open(primary, '_blank', 'noopener')}
-      >
-        <ProceduralThumb project={project} />
-        <span className="idx mono">
-          {String(index + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
-        </span>
-        <span className="open-tag mono">View Project ↗</span>
+    <section className="works-wrap" id="works" ref={wrapRef} style={{ height: `${(projects.length + 1) * 100}vh` }}>
+      {/* intro heading pinned at the very top of the works region */}
+      <div className="section" style={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div className="kicker mono" style={{ color: 'var(--dim)', letterSpacing: '0.3em', fontSize: 12, marginBottom: 20 }}>
+          WORKS — SELECTED PROJECTS
+        </div>
+        <h2 style={{ fontFamily: 'var(--sans)', fontWeight: 500, fontSize: 'clamp(30px,5vw,78px)', lineHeight: 1.06, maxWidth: '16ch' }}>
+          Immersive systems, from signal to screen.
+        </h2>
+        <p style={{ marginTop: 26, fontFamily: 'var(--mono)', color: 'var(--dim)', fontSize: 'clamp(12px,1vw,15px)', maxWidth: '46ch', lineHeight: 1.7 }}>
+          Pioneering immersive, experiential engineering like no other — spanning 5G / wireless
+          research, machine learning, and full-stack worlds. Scroll to rotate the reel.
+        </p>
+        <div className="mono" style={{ marginTop: 30, color: 'var(--dimmer)', fontSize: 12, letterSpacing: '0.2em' }}>
+          ↓ SCROLL
+        </div>
       </div>
-      <div className="slide-info">
-        <div className="date mono">{project.date}</div>
-        <h3>{project.title}</h3>
-        <div className="sub mono">{project.subtitle} — {project.description}</div>
-        <div className="tags">
-          {project.tags.map((t) => (
+
+      {/* fixed overlay tracking the active card */}
+      <div className={`works-overlay ${visible ? 'visible' : ''}`}>
+        <div className="count">
+          {String(active + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')} · {p.date}
+        </div>
+        <h3 style={{ fontFamily: 'var(--sans)', fontWeight: 700, fontSize: 'clamp(26px,3.6vw,54px)', lineHeight: 1.02 }}>
+          {p.title}
+        </h3>
+        <div className="sub mono" style={{ color: 'var(--dim)', fontSize: 'clamp(12px,1vw,15px)', lineHeight: 1.6, marginTop: 8 }}>
+          {p.subtitle}
+        </div>
+        <div className="tags" style={{ marginTop: 16 }}>
+          {p.tags.slice(0, 5).map((t) => (
             <span className="tag" key={t}>{t}</span>
           ))}
         </div>
-        <div className="slide-links">
-          {project.links.map((l) => (
-            <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer">
-              {l.label}
-            </a>
+        <div className="slide-links" style={{ marginTop: 18 }}>
+          {p.links.map((l) => (
+            <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
           ))}
         </div>
       </div>
-    </article>
-  );
-}
 
-export default function ProjectSlides() {
-  return (
-    <section className="section" id="works">
-      <div className="works-intro">
-        <div className="kicker mono">WORKS — 選ばれた作品</div>
-        <h2>
-          Immersive systems, from signal to screen.
-          <span className="jp">没入型・体験型のエンジニアリングを生み出す</span>
-        </h2>
-        <p>
-          Pioneering immersive, experiential engineering like no other — spanning 5G / wireless
-          research, machine learning, and full-stack worlds.
-        </p>
+      <div className={`works-progress ${visible ? 'visible' : ''}`}>
+        {projects.map((_, i) => (
+          <span key={i} className={`dot ${i === active ? 'on' : ''}`} />
+        ))}
       </div>
-      {projects.map((p, i) => (
-        <Slide key={p.id} project={p} index={i} />
-      ))}
     </section>
   );
 }

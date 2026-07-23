@@ -44,13 +44,46 @@ a {
   color: #000;
 }
 
-/* ---- Fixed WebGL canvas behind everything ---- */
+/* ---- Name plate sits BEHIND the canvas so the crystal is in front of it ---- */
+.nameplate {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+.nameplate .stack {
+  text-align: center;
+  font-family: var(--sans);
+  font-weight: 700;
+  line-height: 0.86;
+  color: #fff;
+}
+.nameplate .stack .l1,
+.nameplate .stack .l2 {
+  display: block;
+  font-size: clamp(64px, 17vw, 300px);
+  letter-spacing: 0.02em;
+}
+.nameplate .stack small {
+  display: block;
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: clamp(11px, 1vw, 15px);
+  letter-spacing: 0.4em;
+  color: var(--dim);
+  margin-top: clamp(10px, 1.6vw, 26px);
+}
+
+/* ---- Fixed WebGL canvas ---- */
 .scene-canvas {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 0;
+  z-index: 2;
   pointer-events: none;
 }
 .scene-canvas.interactive {
@@ -60,7 +93,7 @@ a {
 /* ---- Scroll content stacked above canvas ---- */
 .content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   pointer-events: none; /* let drag pass through to the WebGL crystal */
 }
 /* re-enable only real interactive UI so the hero logo stays draggable */
@@ -443,6 +476,62 @@ a {
 .reveal.reveal-in {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ---- Works: tall scroll region driving the 3D ring ---- */
+.works-wrap {
+  position: relative;
+  width: 100%;
+}
+.works-overlay {
+  position: fixed;
+  left: clamp(20px, 4vw, 64px);
+  bottom: clamp(28px, 8vh, 90px);
+  z-index: 6;
+  max-width: min(520px, 46vw);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+.works-overlay.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.works-overlay .count {
+  font-family: var(--mono);
+  color: var(--dim);
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  margin-bottom: 14px;
+}
+.works-overlay a {
+  pointer-events: auto;
+}
+.works-progress {
+  position: fixed;
+  right: clamp(20px, 4vw, 64px);
+  bottom: clamp(28px, 8vh, 90px);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.works-progress.visible {
+  opacity: 1;
+}
+.works-progress .dot {
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--line);
+  transform: rotate(45deg);
+  transition: background 0.3s, border-color 0.3s;
+}
+.works-progress .dot.on {
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 .slide {

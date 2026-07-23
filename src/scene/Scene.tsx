@@ -6,6 +6,8 @@ import { BlendFunction } from 'postprocessing';
 import * as THREE from 'three';
 import CrystalTriangle from './CrystalTriangle';
 import GridBackdrop from './GridBackdrop';
+import WorksRing from './WorksRing';
+import NamePlate3D from './NamePlate3D';
 import { useStore } from '../store/useStore';
 
 function Lighting() {
@@ -15,6 +17,7 @@ function Lighting() {
       <directionalLight position={[3, 4, 5]} intensity={2} />
       <directionalLight position={[-4, -2, -3]} intensity={0.8} color={'#6a7bff'} />
       <pointLight position={[0, 0, 3]} intensity={6} color={'#aab6ff'} distance={12} />
+      <pointLight position={[0, 0, -2]} intensity={5} color={'#7d8cff'} distance={10} />
       <Environment resolution={256}>
         <group>
           <Lightformer form="rect" intensity={5} position={[0, 3, 3]} scale={[8, 3, 1]} color="#ffffff" />
@@ -49,6 +52,7 @@ export default function Scene() {
   return (
     <Canvas
       className="scene-canvas interactive"
+      style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh' }}
       dpr={isMobile ? [1, 1.3] : [1, 2]}
       gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
       camera={{ position: [0, 0, 5], fov: 42 }}
@@ -58,7 +62,9 @@ export default function Scene() {
       <Suspense fallback={null}>
         <GridBackdrop />
         <Lighting />
+        <NamePlate3D />
         <CrystalTriangle />
+        <WorksRing />
       </Suspense>
       <Effects mobile={isMobile} />
     </Canvas>

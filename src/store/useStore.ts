@@ -15,6 +15,11 @@ interface AppState {
   reducedMotion: boolean;
   isMobile: boolean;
 
+  // works carousel
+  worksActive: boolean;
+  worksProgress: number; // 0..1 through the works section
+  activeProject: number;
+
   setLoaded: (v: boolean) => void;
   setScroll: (v: number) => void;
   setSection: (s: string) => void;
@@ -22,6 +27,7 @@ interface AppState {
   setQuaternion: (q: [number, number, number, number]) => void;
   resetQuaternion: () => void;
   setEnv: (p: { reducedMotion: boolean; isMobile: boolean }) => void;
+  setWorks: (p: { active: boolean; progress: number; index: number }) => void;
 }
 
 export const useStore = create<AppState>((set) => ({
@@ -32,6 +38,9 @@ export const useStore = create<AppState>((set) => ({
   quaternion: [0, 0, 0, 1],
   reducedMotion: false,
   isMobile: false,
+  worksActive: false,
+  worksProgress: 0,
+  activeProject: 0,
 
   setLoaded: (v) => set({ loaded: v }),
   setScroll: (v) => set({ scroll: v }),
@@ -40,4 +49,12 @@ export const useStore = create<AppState>((set) => ({
   setQuaternion: (q) => set({ quaternion: q }),
   resetQuaternion: () => set({ quaternion: [0, 0, 0, 1] }),
   setEnv: (p) => set({ reducedMotion: p.reducedMotion, isMobile: p.isMobile }),
+  setWorks: (p) =>
+    set((st) =>
+      st.worksActive === p.active &&
+      st.activeProject === p.index &&
+      Math.abs(st.worksProgress - p.progress) < 0.001
+        ? st
+        : { worksActive: p.active, worksProgress: p.progress, activeProject: p.index }
+    ),
 }));
