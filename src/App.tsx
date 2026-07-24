@@ -7,6 +7,7 @@ import Hud from './ui/Hud';
 import Whoami from './ui/Whoami';
 import ProjectSlides from './ui/ProjectSlides';
 import FlowSuite from './ui/FlowSuite';
+import ProjectDetails from './ui/ProjectDetails';
 import Outro from './ui/Outro';
 import Contact from './ui/Contact';
 import { useLenis } from './hooks/useLenis';
@@ -45,6 +46,7 @@ export default function App() {
         <Hero />
         <ProjectSlides />
         <FlowSuite />
+        <ProjectDetails />
         <Outro />
         <Contact />
       </main>

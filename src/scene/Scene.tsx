@@ -51,7 +51,7 @@ export default function Scene() {
 
   return (
     <Canvas
-      className="scene-canvas interactive"
+      className={`scene-canvas${isMobile ? '' : ' interactive'}`}
       style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh' }}
       dpr={isMobile ? [1, 1.3] : [1, 2]}
       gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}

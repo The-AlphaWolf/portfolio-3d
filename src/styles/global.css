@@ -88,6 +88,13 @@ a {
 }
 .scene-canvas.interactive {
   pointer-events: auto;
+  touch-action: pan-y; /* never swallow vertical scroll on touch */
+}
+/* touch devices: never let the canvas capture the drag — scrolling wins */
+@media (pointer: coarse) {
+  .scene-canvas.interactive {
+    pointer-events: none;
+  }
 }
 
 /* ---- Scroll content stacked above canvas ---- */
@@ -734,6 +741,25 @@ a {
     order: -1;
   }
 }
+
+/* ---- Non-flagship project detail blocks (smaller than FlowSuite) ---- */
+.project-detail {
+  min-height: 100vh;
+  padding-top: 12vh;
+  padding-bottom: 12vh;
+}
+.project-detail h2 {
+  font-size: clamp(30px, 5vw, 68px);
+  line-height: 1.0;
+}
+.project-detail .pd-desc {
+  font-family: var(--mono);
+  color: var(--dim);
+  font-size: clamp(12px, 1vw, 15px);
+  line-height: 1.7;
+  max-width: 52ch;
+  margin: 20px 0 4px;
+}
 .feature .rail {
   font-family: var(--mono);
   letter-spacing: 0.3em;
@@ -938,7 +964,7 @@ a {
     display: none;
   }
   .hud-whoami {
-    width: min(88vw, 360px);
+    display: none; /* keep the mobile hero clean */
   }
   .contact-grid {
     grid-template-columns: 1fr 1fr;
@@ -954,6 +980,60 @@ a {
   }
   .nav-links {
     display: none;
+  }
+  .nav {
+    padding: 16px 20px;
+  }
+  .nav .cta {
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+
+  /* works carousel overlay */
+  .works-overlay {
+    left: 20px;
+    right: 20px;
+    bottom: 22px;
+    max-width: none;
+  }
+  .works-overlay h3 {
+    font-size: clamp(24px, 8vw, 38px);
+  }
+  .works-progress {
+    right: 12px;
+    bottom: 22px;
+  }
+
+  /* works intro + feature text breathing room */
+  .works-intro,
+  .feature,
+  .project-detail {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .project-detail {
+    min-height: auto;
+    padding-top: 14vh;
+    padding-bottom: 14vh;
+  }
+  .feature {
+    min-height: auto;
+    padding-top: 16vh;
+    padding-bottom: 12vh;
+  }
+  .feature .rail {
+    display: none;
+  }
+  .feature h2 {
+    font-size: clamp(40px, 15vw, 80px);
+  }
+
+  /* contact readability */
+  .contact .big-mark {
+    font-size: clamp(72px, 26vw, 160px);
+  }
+  .contact-actions .row {
+    font-size: 20px;
   }
 }
 

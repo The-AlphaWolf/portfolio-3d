@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useStore } from '../store/useStore';
 
@@ -41,12 +41,17 @@ export default function NamePlate3D() {
     (document as any).fonts?.ready?.then(draw);
   }, [canvas, ctx, texture]);
 
+  const viewport = useThree((s) => s.viewport);
+
   useFrame((_, delta) => {
     if (!matRef.current || !mesh.current) return;
     const scroll = useStore.getState().scroll;
     const target = THREE.MathUtils.clamp(1 - scroll * 8, 0, 1);
     matRef.current.opacity = THREE.MathUtils.damp(matRef.current.opacity, target, 8, delta);
     mesh.current.visible = matRef.current.opacity > 0.02;
+    // fit the wordmark to the viewport width (keeps it on-screen on mobile)
+    const fit = THREE.MathUtils.clamp((viewport.width * 0.94) / 9.6, 0.32, 1.05);
+    mesh.current.scale.setScalar(fit);
   });
 
   return (
