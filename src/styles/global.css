@@ -844,6 +844,134 @@ a {
   background: var(--fg);
 }
 
+/* ---- Info sections (Whoami / About) ---- */
+.info-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 14vh;
+  padding-bottom: 14vh;
+  background: linear-gradient(rgba(5, 6, 14, 0.68), rgba(5, 6, 14, 0.6));
+}
+.info-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  width: 100%;
+}
+.kicker {
+  color: var(--dim);
+  letter-spacing: 0.3em;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+.info-title {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: clamp(28px, 4.6vw, 62px);
+  line-height: 1.08;
+  max-width: 22ch;
+}
+.info-lead {
+  font-family: var(--mono);
+  color: var(--dim);
+  font-size: clamp(12px, 1vw, 15px);
+  line-height: 1.75;
+  max-width: 62ch;
+  margin: 24px 0;
+}
+.info-meta {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  color: var(--dimmer);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  margin-top: 26px;
+}
+
+.whoami-feed {
+  margin-top: 22px;
+}
+.feed-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 24px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  align-items: baseline;
+}
+.feed-date {
+  color: var(--dimmer);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+.feed-head {
+  font-family: var(--sans);
+  font-size: clamp(15px, 1.5vw, 21px);
+  line-height: 1.4;
+  color: var(--fg);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(30px, 5vw, 72px);
+  margin-top: 36px;
+}
+.about-h {
+  color: var(--dim);
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.about-item {
+  padding: 12px 0;
+}
+.about-date {
+  color: var(--dimmer);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+.about-role {
+  font-family: var(--sans);
+  font-size: clamp(15px, 1.4vw, 19px);
+  margin-top: 5px;
+}
+.about-role span {
+  color: var(--dim);
+}
+.about-desc {
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: clamp(12px, 1vw, 14px);
+  line-height: 1.6;
+  margin-top: 5px;
+  max-width: 48ch;
+}
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 24px;
+  margin-top: 16px;
+}
+.skill-label {
+  color: var(--dim);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+@media (max-width: 760px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+  .feed-row {
+    grid-template-columns: 84px 1fr;
+    gap: 14px;
+  }
+}
+
 /* ---- Contact footer ---- */
 .contact {
   min-height: 100vh;

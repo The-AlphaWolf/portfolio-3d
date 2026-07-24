@@ -9,6 +9,8 @@ import ProjectSlides from './ui/ProjectSlides';
 import FlowSuite from './ui/FlowSuite';
 import ProjectDetails from './ui/ProjectDetails';
 import Outro from './ui/Outro';
+import WhoamiSection from './ui/WhoamiSection';
+import AboutSection from './ui/AboutSection';
 import Contact from './ui/Contact';
 import { useLenis } from './hooks/useLenis';
 import { useStore } from './store/useStore';
@@ -48,6 +50,8 @@ export default function App() {
         <FlowSuite />
         <ProjectDetails />
         <Outro />
+        <WhoamiSection />
+        <AboutSection />
         <Contact />
       </main>
     </>

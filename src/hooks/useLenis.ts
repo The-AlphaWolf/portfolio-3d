@@ -2,6 +2,13 @@ import { useEffect } from 'react';
 import Lenis from 'lenis';
 import { useStore } from '../store/useStore';
 
+/** Shared Lenis instance so nav links can drive smooth, state-synced scrolling. */
+let current: Lenis | null = null;
+export function scrollToSection(target: string) {
+  if (current) current.scrollTo(target, { offset: 0, duration: 1.2 });
+  else document.querySelector(target)?.scrollIntoView({ behavior: 'smooth' });
+}
+
 /** Smooth scroll + publish global scroll progress (0..1) to the store. */
 export function useLenis(enabled: boolean) {
   const setScroll = useStore((s) => s.setScroll);
@@ -16,6 +23,7 @@ export function useLenis(enabled: boolean) {
       wheelMultiplier: 1,
       touchMultiplier: 1.4,
     });
+    current = lenis;
 
     let raf = 0;
     const loop = (t: number) => {
@@ -34,6 +42,7 @@ export function useLenis(enabled: boolean) {
     return () => {
       cancelAnimationFrame(raf);
       lenis.destroy();
+      if (current === lenis) current = null;
     };
   }, [enabled, reducedMotion, setScroll]);
 }

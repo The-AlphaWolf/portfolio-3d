@@ -59,10 +59,6 @@ export default function Contact() {
         </div>
 
         <div className="contact-actions">
-          <div className="row">
-            <a href={`mailto:${profile.email}`}>Contact <span aria-hidden>↗</span></a>
-            <a href={`mailto:${profile.email}?subject=Opportunity`}>Recruit <span aria-hidden>↗</span></a>
-          </div>
           <div className="small">
             <a href={`mailto:${profile.email}`}>{profile.email}</a>
             <a href={`tel:${profile.phone.replace(/[^+\d]/g, '')}`}>{profile.phone}</a>
